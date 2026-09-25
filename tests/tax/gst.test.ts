@@ -28,3 +28,13 @@ describe("calculateGst", () => {
     expect(() => calculateGst(100, -1)).toThrow(RangeError);
   });
 });
+
+describe("calculateGst on fractional amounts", () => {
+  it("rounds half a paisa up for small amounts", () => {
+    expect(calculateGst(149.25)).toBe(26.87);
+  });
+
+  it("rounds half a paisa up for amounts over ₹1,000", () => {
+    expect(calculateGst(1049.25)).toBe(188.87);
+  });
+});
