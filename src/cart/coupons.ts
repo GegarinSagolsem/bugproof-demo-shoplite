@@ -51,7 +51,8 @@ export function couponDiscount(subtotal: number, code?: string): number {
 /** Adds a coupon to the cart. Coupons stack: each one is computed against the subtotal. */
 export function applyCoupon(cart: Cart, input: string): Cart {
   const code = normalizeCouponCode(input);
-  if (code && !isKnownCoupon(code)) throw new InvalidCouponError(input.trim());
+  if (!code) return cart;
+  if (!isKnownCoupon(code)) throw new InvalidCouponError(input.trim());
   return { ...cart, couponCodes: [...cart.couponCodes, code] };
 }
 
