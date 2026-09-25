@@ -57,3 +57,21 @@ describe("OrderService", () => {
     expect((await service.placeOrder(cartFor("o1"))).estimatedDelivery).toBe("2026-03-13");
   });
 });
+
+describe("OrderService order history", () => {
+  it("lists orders newest first", async () => {
+    let now = Date.parse("2026-03-10T09:00:00+05:30");
+    const service = new OrderService({ clock: () => new Date((now += 60_000)) });
+    await service.placeOrder(cartFor("a"));
+    await service.placeOrder(cartFor("b"));
+    await service.placeOrder(cartFor("c"));
+    expect(service.listOrders().map((order) => order.cartId)).toEqual(["c", "b", "a"]);
+  });
+
+  it("looks up an order by id", async () => {
+    const { service } = setup();
+    const order = await service.placeOrder(cartFor("o1"));
+    expect(service.getOrder(order.id)).toEqual(order);
+    expect(service.getOrder("ORD-9999")).toBeUndefined();
+  });
+});
