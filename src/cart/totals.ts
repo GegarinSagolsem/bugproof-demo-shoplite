@@ -1,7 +1,8 @@
-import { fromPaise, toPaise } from "../currency/money";
-import { calculateGst } from "../tax/gst";
+import { fromPaise, roundMoney, toPaise } from "../currency/money";
+import { GST_RATE } from "../tax/gst";
 import type { Cart } from "./cart";
 import { couponDiscount } from "./coupons";
+import { lineItems, sumBy } from "./lineItems";
 
 export const FREE_SHIPPING_THRESHOLD = 999;
 export const SHIPPING_FEE = 49;
@@ -21,8 +22,9 @@ export function shippingFor(subtotal: number, lineCount: number): number {
 }
 
 export function computeTotals(cart: Cart): CartTotals {
-  const subtotal = fromPaise(cart.items.reduce((sum, item) => sum + toPaise(item.unitPrice) * item.quantity, 0));
-  const tax = calculateGst(subtotal);
+  const lines = lineItems(cart);
+  const subtotal = roundMoney(sumBy(lines, (line) => line.lineTotal));
+  const tax = roundMoney(sumBy(lines, (line) => line.lineTotal * GST_RATE));
 
   // Coupons come off the pre-tax subtotal; GST is charged on the list price.
   const discount = Math.min(couponDiscount(subtotal, cart.couponCode), subtotal);

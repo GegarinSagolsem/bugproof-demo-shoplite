@@ -42,3 +42,11 @@ describe("computeTotals", () => {
     });
   });
 });
+
+describe("computeTotals with multiple line items", () => {
+  it("sums the line totals into the subtotal", () => {
+    const totals = computeTotals(cartWith(["p01", 1], ["p16", 2], ["p06", 1]));
+    expect(totals.subtotal).toBe(349 + 398 + 399);
+    expect(totals.itemCount).toBe(4);
+  });
+});
