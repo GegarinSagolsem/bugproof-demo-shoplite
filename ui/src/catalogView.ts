@@ -10,6 +10,7 @@ export interface CatalogProps {
   query: string;
   page: number;
   onPage(page: number): void;
+  onAdd(productId: string): void;
 }
 
 function initials(name: string): string {
@@ -21,7 +22,7 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-function productCard(product: Product): HTMLElement {
+function productCard(product: Product, onAdd: (productId: string) => void): HTMLElement {
   return el(
     "article",
     { className: "card" },
@@ -29,10 +30,11 @@ function productCard(product: Product): HTMLElement {
     el("h3", {}, product.name),
     el("p", { className: "category" }, product.category),
     el("p", { className: "price" }, formatINR(product.price)),
+    el("button", { type: "button", className: "add", onclick: () => onAdd(product.id) }, "Add to cart"),
   );
 }
 
-export function renderCatalog({ query, page, onPage }: CatalogProps): void {
+export function renderCatalog({ query, page, onPage, onAdd }: CatalogProps): void {
   const results = searchProducts(PRODUCTS, query);
   const current = paginate(results, page, PAGE_SIZE);
 
@@ -40,7 +42,7 @@ export function renderCatalog({ query, page, onPage }: CatalogProps): void {
   if (results.length === 0) {
     grid.replaceChildren(el("p", { className: "empty" }, `No products match “${query.trim()}”.`));
   } else {
-    grid.replaceChildren(...current.items.map(productCard));
+    grid.replaceChildren(...current.items.map((product) => productCard(product, onAdd)));
   }
 
   const first = current.totalItems === 0 ? 0 : (current.page - 1) * current.pageSize + 1;

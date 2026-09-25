@@ -16,6 +16,16 @@
         <div id="product-grid" class="grid"></div>
         <nav id="pager" class="pager" aria-label="Pagination"></nav>
       </section>
+      <aside class="cart" aria-label="Cart">
+        <h2>Your cart</h2>
+        <ul id="cart-lines" class="lines"></ul>
+        <form id="coupon-form" class="coupon">
+          <input id="coupon-input" placeholder="Coupon code" autocomplete="off" aria-label="Coupon code" />
+          <button type="submit">Apply</button>
+        </form>
+        <div id="coupon-status" class="coupon-status"></div>
+        <dl id="totals" class="totals"></dl>
+      </aside>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
