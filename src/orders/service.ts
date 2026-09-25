@@ -55,8 +55,13 @@ export class OrderService {
     return submission;
   }
 
+  /** All orders, newest first. */
   listOrders(): Order[] {
-    return [...this.orders];
+    return [...this.orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt) || b.id.localeCompare(a.id));
+  }
+
+  getOrder(id: string): Order | undefined {
+    return this.orders.find((order) => order.id === id);
   }
 
   private async submit(cart: Cart): Promise<Order> {
