@@ -3,6 +3,7 @@ import { applyCoupon, InvalidCouponError, removeCoupon } from "../../src/cart/co
 import { lineItems, type LineItem } from "../../src/cart/lineItems";
 import { computeTotals } from "../../src/cart/totals";
 import { formatDiscount, formatINR } from "../../src/currency/format";
+import { estimateDelivery, formatDeliveryDate } from "../../src/delivery/estimate";
 import { GST_RATE_PERCENT } from "../../src/tax/gst";
 import { $, el } from "./dom";
 
@@ -74,6 +75,11 @@ export function renderCart({ cart, onChange }: CartViewProps): void {
     ...row("Shipping", totals.shipping === 0 ? "Free" : formatINR(totals.shipping)),
     ...row("Total", formatINR(totals.total), "grand"),
   );
+
+  $("#delivery").textContent =
+    lines.length === 0
+      ? ""
+      : `Estimated delivery: ${formatDeliveryDate(estimateDelivery(new Date()))}. Orders after 8 PM IST ship the next day.`;
 
   const status = $("#coupon-status");
   if (couponError) {
