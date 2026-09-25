@@ -34,8 +34,8 @@ export class InvalidQuantityError extends Error {
   }
 }
 
-export function addItem(cart: Cart, productId: string, quantity: number = 1): Cart {
-  const qty = toQuantity(quantity);
+export function addItem(cart: Cart, productId: string, quantity: number | string = 1): Cart {
+  const qty = parseQuantity(quantity);
   const product = getProductById(productId);
   if (!product) throw new UnknownProductError(productId);
   const existing = cart.items.find((item) => item.productId === productId);
@@ -47,10 +47,10 @@ export function addItem(cart: Cart, productId: string, quantity: number = 1): Ca
   return { ...cart, items };
 }
 
-export function setQuantity(cart: Cart, productId: string, quantity: number): Cart {
+export function setQuantity(cart: Cart, productId: string, quantity: number | string): Cart {
   if (!cart.items.some((item) => item.productId === productId)) throw new UnknownProductError(productId);
-  if (quantity === 0) return removeItem(cart, productId);
-  const qty = toQuantity(quantity);
+  const qty = parseQuantity(quantity);
+  if (qty === 0) return removeItem(cart, productId);
   return {
     ...cart,
     items: cart.items.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item)),
@@ -65,7 +65,9 @@ export function itemCount(cart: Cart): number {
   return cart.items.reduce((sum, item) => sum + item.quantity, 0);
 }
 
-function toQuantity(quantity: number): number {
-  if (!Number.isInteger(quantity) || quantity < 1) throw new InvalidQuantityError(quantity);
-  return quantity;
+/** Quantities arrive as numbers from code and as strings from form fields and JSON payloads. */
+export function parseQuantity(input: number | string): number {
+  const value = typeof input === "string" ? Number(input.trim()) : input;
+  if (!Number.isFinite(value)) throw new InvalidQuantityError(input);
+  return Math.trunc(value);
 }
