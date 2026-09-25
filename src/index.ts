@@ -1,3 +1,5 @@
+export * from "./cart/cart";
+export * from "./cart/totals";
 export * from "./catalog/paginate";
 export * from "./catalog/products";
 export * from "./catalog/search";
