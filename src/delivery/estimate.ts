@@ -4,6 +4,7 @@ export const DISPATCH_CUTOFF_HOUR = 20;
 export const DEFAULT_TRANSIT_DAYS = 3;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const SUNDAY = 0;
 
 interface CalendarTime {
   year: number;
@@ -26,8 +27,14 @@ function istCalendar(instant: Date): CalendarTime {
   return { year: get("year"), month: get("month"), day: get("day"), hour: get("hour") };
 }
 
+/** Couriers do not deliver on Sundays, so Sundays are not counted as transit days. */
 function addDeliveryDays(start: number, days: number): number {
-  return start + days * DAY_MS;
+  let day = start;
+  for (let added = 0; added < days; ) {
+    day += DAY_MS;
+    if (new Date(day).getUTCDay() !== SUNDAY) added++;
+  }
+  return day;
 }
 
 function toIsoDate(epochMs: number): string {
@@ -43,4 +50,16 @@ export function estimateDelivery(orderedAt: Date, transitDays: number = DEFAULT_
   let dispatch = Date.UTC(year, month - 1, day);
   if (hour >= DISPATCH_CUTOFF_HOUR) dispatch += DAY_MS;
   return toIsoDate(addDeliveryDays(dispatch, transitDays));
+}
+
+const displayFormat = new Intl.DateTimeFormat("en-IN", {
+  weekday: "short",
+  day: "numeric",
+  month: "short",
+  timeZone: "UTC",
+});
+
+/** "2026-03-16" → "Mon, 16 Mar". */
+export function formatDeliveryDate(isoDate: string): string {
+  return displayFormat.format(new Date(`${isoDate}T00:00:00Z`));
 }
