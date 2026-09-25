@@ -36,7 +36,6 @@ export interface OrderServiceOptions {
 
 export class OrderService {
   private readonly orders: Order[] = [];
-  private readonly inFlight = new Map<string, Promise<Order>>();
   private readonly payments: PaymentGateway;
   private readonly clock: () => Date;
   private seq = 0;
@@ -46,27 +45,10 @@ export class OrderService {
     this.clock = options.clock ?? (() => new Date());
   }
 
-  /** Places an order for the cart. Concurrent calls for the same cart share one submission. */
-  placeOrder(cart: Cart): Promise<Order> {
-    const pending = this.inFlight.get(cart.id);
-    if (pending) return pending;
-    const submission = this.submit(cart).finally(() => this.inFlight.delete(cart.id));
-    this.inFlight.set(cart.id, submission);
-    return submission;
-  }
-
-  /** All orders, newest first. */
-  listOrders(): Order[] {
-    return [...this.orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt) || b.id.localeCompare(a.id));
-  }
-
-  getOrder(id: string): Order | undefined {
-    return this.orders.find((order) => order.id === id);
-  }
-
-  private async submit(cart: Cart): Promise<Order> {
+  /** Places an order for the cart. A cart can only be ordered once. */
+  async placeOrder(cart: Cart): Promise<Order> {
     if (cart.items.length === 0) throw new EmptyCartError();
-    if (this.orders.some((order) => order.cartId === cart.id)) throw new DuplicateOrderError(cart.id);
+    if (this.hasOrderFor(cart.id)) throw new DuplicateOrderError(cart.id);
     const totals = computeTotals(cart);
     const placedAt = this.clock();
     const { paymentId } = await this.payments.charge(totals.total, cart.id);
@@ -81,5 +63,18 @@ export class OrderService {
     };
     this.orders.push(order);
     return order;
+  }
+
+  /** All orders, newest first. */
+  listOrders(): Order[] {
+    return [...this.orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt) || b.id.localeCompare(a.id));
+  }
+
+  getOrder(id: string): Order | undefined {
+    return this.orders.find((order) => order.id === id);
+  }
+
+  private hasOrderFor(cartId: string): boolean {
+    return this.orders.some((order) => order.cartId === cartId);
   }
 }
