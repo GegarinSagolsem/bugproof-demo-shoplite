@@ -1,4 +1,5 @@
 export * from "./cart/cart";
+export * from "./cart/coupons";
 export * from "./cart/totals";
 export * from "./catalog/paginate";
 export * from "./catalog/products";
