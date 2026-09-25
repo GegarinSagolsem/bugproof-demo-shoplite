@@ -1,0 +1,91 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 3011 >>
+stream
+BT /F2 17 Tf 56 760.0 Td (QA Report: Delivery estimate is one day early for) Tj ET
+BT /F2 17 Tf 56 734.0 Td (evening orders) Tj ET
+BT /F1 10 Tf 56 706.0 Td (Report ID: QA-2026-117) Tj ET
+BT /F1 10 Tf 56 692.0 Td (Component: Checkout / delivery estimate) Tj ET
+BT /F1 10 Tf 56 678.0 Td (Severity: Major \(customer-facing promise is wrong\)) Tj ET
+BT /F1 10 Tf 56 664.0 Td (Environment: staging, Chrome 141 on macOS, device clock set to Asia/Kolkata \(IST\)) Tj ET
+BT /F1 10 Tf 56 650.0 Td (Tester: QA team, Bengaluru) Tj ET
+BT /F2 13 Tf 56 615.0 Td (Summary) Tj ET
+BT /F1 10 Tf 56 587.0 Td (The estimated delivery date shown in the cart and stored on the order is one day too early for) Tj ET
+BT /F1 10 Tf 56 573.0 Td (orders placed at or after 8:00 PM IST. Our dispatch cutoff is 8 PM IST: anything ordered after) Tj ET
+BT /F1 10 Tf 56 559.0 Td (that is dispatched the next day, so the promise should move out by a day. It does not.) Tj ET
+BT /F2 13 Tf 56 524.0 Td (Business rule under test) Tj ET
+BT /F1 10 Tf 56 496.0 Td (- Orders placed before 20:00 IST are dispatched the same day.) Tj ET
+BT /F1 10 Tf 56 482.0 Td (- Orders placed at or after 20:00 IST are dispatched the next day.) Tj ET
+BT /F1 10 Tf 56 468.0 Td (- Transit takes 3 days; Sundays are not delivery days.) Tj ET
+BT /F2 13 Tf 56 433.0 Td (Steps to reproduce) Tj ET
+BT /F1 10 Tf 56 405.0 Td (1. Set the device clock \(or the service clock in the test harness\) to **Tuesday 10 March 2026,) Tj ET
+BT /F1 10 Tf 56 391.0 Td (   21:00 IST** \(15:30 UTC\).) Tj ET
+BT /F1 10 Tf 56 377.0 Td (2. Add any product to the cart, e.g. Ceramic Coffee Mug.) Tj ET
+BT /F1 10 Tf 56 363.0 Td (3. Read the "Estimated delivery" line under the cart totals.) Tj ET
+BT /F1 10 Tf 56 349.0 Td (4. Place the order and open "Your orders"; read "arrives ...".) Tj ET
+BT /F2 13 Tf 56 314.0 Td (Expected result) Tj ET
+BT /F1 10 Tf 56 286.0 Td (Dispatch Wednesday 11 March, delivery Sat, 14 Mar \(2026-03-14\).) Tj ET
+BT /F2 13 Tf 56 251.0 Td (Actual result) Tj ET
+BT /F1 10 Tf 56 223.0 Td (Cart and order both show Fri, 13 Mar \(2026-03-13\) - the same date as a morning order.) Tj ET
+BT /F2 13 Tf 56 188.0 Td (Additional observations) Tj ET
+BT /F1 10 Tf 56 160.0 Td (| Order time \(IST\)        | UTC equivalent | Expected   | Actual     | Result |) Tj ET
+BT /F1 10 Tf 56 146.0 Td (| Tue 10 Mar, 10:00       | 04:30          | Fri 13 Mar | Fri 13 Mar | Pass   |) Tj ET
+BT /F1 10 Tf 56 132.0 Td (| Tue 10 Mar, 19:55       | 14:25          | Fri 13 Mar | Fri 13 Mar | Pass   |) Tj ET
+BT /F1 10 Tf 56 118.0 Td (| Tue 10 Mar, 20:05       | 14:35          | Sat 14 Mar | Fri 13 Mar | FAIL   |) Tj ET
+BT /F1 10 Tf 56 104.0 Td (| Tue 10 Mar, 21:00       | 15:30          | Sat 14 Mar | Fri 13 Mar | FAIL   |) Tj ET
+BT /F1 10 Tf 56 90.0 Td (| Tue 10 Mar, 23:45       | 18:15          | Sat 14 Mar | Fri 13 Mar | FAIL   |) Tj ET
+BT /F1 10 Tf 56 76.0 Td (| Thu 12 Mar, 21:30       | 16:00          | Tue 17 Mar | Mon 16 Mar | FAIL   |) Tj ET
+BT /F1 8 Tf 499 30 Td (Page 1 of 2) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 733 >>
+stream
+BT /F1 10 Tf 56 772.0 Td (- Every failing case is at or after 20:00 IST; the estimate is always exactly one day early.) Tj ET
+BT /F1 10 Tf 56 758.0 Td (- Morning and afternoon orders are correct, including orders just after midnight IST.) Tj ET
+BT /F1 10 Tf 56 744.0 Td (- Reproduced on two machines, one with the OS timezone set to UTC and one set to IST, so it) Tj ET
+BT /F1 10 Tf 56 730.0 Td (  does not depend on the browser's local timezone.) Tj ET
+BT /F1 10 Tf 56 716.0 Td (- This worked in the previous release that QA signed off; it looks like a regression.) Tj ET
+BT /F2 13 Tf 56 681.0 Td (Attachments) Tj ET
+BT /F1 10 Tf 56 653.0 Td (- Screen recording available on request.) Tj ET
+BT /F1 8 Tf 499 30 Td (Page 2 of 2) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000415 00000 n 
+0000003478 00000 n 
+0000003624 00000 n 
+0000004408 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+4554
+%%EOF
