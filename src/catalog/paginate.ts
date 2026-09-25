@@ -13,11 +13,13 @@ export function paginate<T>(items: readonly T[], page: number, pageSize: number)
   if (!Number.isInteger(pageSize) || pageSize < 1) {
     throw new RangeError(`pageSize must be a positive integer, got ${pageSize}`);
   }
-  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const lastIndex = items.length - 1;
+  const totalPages = Math.max(1, Math.ceil(lastIndex / pageSize));
   const current = Math.min(Math.max(1, Math.floor(page)), totalPages);
   const start = (current - 1) * pageSize;
+  const end = Math.min(start + pageSize, items.length);
   return {
-    items: items.slice(start, start + pageSize),
+    items: items.slice(start, end),
     page: current,
     pageSize,
     totalItems: items.length,
