@@ -6,4 +6,7 @@ export * from "./catalog/products";
 export * from "./catalog/search";
 export * from "./currency/format";
 export * from "./currency/money";
+export * from "./delivery/estimate";
+export * from "./orders/payments";
+export * from "./orders/service";
 export * from "./tax/gst";
