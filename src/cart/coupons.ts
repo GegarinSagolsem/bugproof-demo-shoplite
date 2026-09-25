@@ -27,13 +27,25 @@ export function isKnownCoupon(code: string): boolean {
   return Object.hasOwn(COUPON_RULES, code);
 }
 
+export interface CouponRule {
+  kind: "percent" | "flat";
+  value: number;
+}
+
+const PERCENT_SUFFIX = /%$/;
+
+/** Parses a promo-sheet rule such as "10%" or "200". */
+export function parseCouponRule(rule: string): CouponRule {
+  const value = parseFloat(rule);
+  return PERCENT_SUFFIX.test(rule) ? { kind: "percent", value } : { kind: "flat", value };
+}
+
 /** Discount in rupees for a coupon code against a pre-tax subtotal. */
 export function couponDiscount(subtotal: number, code?: string): number {
-  if (!code) return 0;
-  const rule = COUPON_RULES[code];
-  const value = parseFloat(rule);
-  if (rule.endsWith("%")) return fromPaise(Math.round((toPaise(subtotal) * value) / 100));
-  return Math.min(value, subtotal);
+  if (code === undefined) return 0;
+  const rule = parseCouponRule(COUPON_RULES[code]);
+  if (rule.kind === "percent") return fromPaise(Math.round((toPaise(subtotal) * rule.value) / 100));
+  return Math.min(rule.value, subtotal);
 }
 
 export function applyCoupon(cart: Cart, input: string): Cart {
