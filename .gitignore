@@ -5,3 +5,4 @@ coverage/
 .bugproof/
 *.log
 !intake/*.log
+.bugproof/
