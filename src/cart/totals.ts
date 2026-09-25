@@ -27,7 +27,7 @@ export function computeTotals(cart: Cart): CartTotals {
   const tax = roundMoney(sumBy(lines, (line) => line.lineTotal * GST_RATE));
 
   // Coupons come off the pre-tax subtotal; GST is charged on the list price.
-  const discount = Math.min(couponDiscount(subtotal, cart.couponCode), subtotal);
+  const discount = cart.couponCodes.reduce((sum, code) => sum + couponDiscount(subtotal, code), 0);
 
   const shipping = shippingFor(subtotal, cart.items.length);
   const total = fromPaise(toPaise(subtotal) - toPaise(discount) + toPaise(tax) + toPaise(shipping));

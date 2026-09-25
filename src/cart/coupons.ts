@@ -48,12 +48,13 @@ export function couponDiscount(subtotal: number, code?: string): number {
   return Math.min(rule.value, subtotal);
 }
 
+/** Adds a coupon to the cart. Coupons stack: each one is computed against the subtotal. */
 export function applyCoupon(cart: Cart, input: string): Cart {
   const code = normalizeCouponCode(input);
   if (code && !isKnownCoupon(code)) throw new InvalidCouponError(input.trim());
-  return { ...cart, couponCode: code };
+  return { ...cart, couponCodes: [...cart.couponCodes, code] };
 }
 
 export function removeCoupon(cart: Cart): Cart {
-  return { ...cart, couponCode: undefined };
+  return { ...cart, couponCodes: [] };
 }

@@ -54,3 +54,15 @@ describe("coupons", () => {
     });
   });
 });
+
+describe("stacked coupons", () => {
+  it("combines a percentage and a flat coupon", () => {
+    const cart = applyCoupon(applyCoupon(speakerCart(), "SAVE10"), "FLAT200");
+    expect(computeTotals(cart).discount).toBe(449.9);
+  });
+
+  it("keeps coupons in the order they were applied", () => {
+    const cart = applyCoupon(applyCoupon(speakerCart(), "save10"), "flat200");
+    expect(cart.couponCodes).toEqual(["SAVE10", "FLAT200"]);
+  });
+});

@@ -59,6 +59,10 @@ function row(label: string, value: string, className = ""): HTMLElement[] {
   return [el("dt", { className }, label), el("dd", { className }, value)];
 }
 
+function percentOff(discount: number, subtotal: number): string {
+  return subtotal === 0 ? "" : ` (${Math.round((discount / subtotal) * 100)}% off)`;
+}
+
 export function renderCart({ cart, onChange }: CartViewProps): void {
   const lines = lineItems(cart);
   $("#cart-lines").replaceChildren(
@@ -70,7 +74,9 @@ export function renderCart({ cart, onChange }: CartViewProps): void {
   const totals = computeTotals(cart);
   $("#totals").replaceChildren(
     ...row(`Subtotal (${totals.itemCount} items)`, formatINR(totals.subtotal)),
-    ...(totals.discount !== 0 ? row("Discount", formatDiscount(totals.discount), "discount") : []),
+    ...(totals.discount !== 0
+      ? row(`Discount${percentOff(totals.discount, totals.subtotal)}`, formatDiscount(totals.discount), "discount")
+      : []),
     ...row(`GST (${GST_RATE_PERCENT}%)`, formatINR(totals.tax)),
     ...row("Shipping", totals.shipping === 0 ? "Free" : formatINR(totals.shipping)),
     ...row("Total", formatINR(totals.total), "grand"),
@@ -84,10 +90,10 @@ export function renderCart({ cart, onChange }: CartViewProps): void {
   const status = $("#coupon-status");
   if (couponError) {
     status.replaceChildren(el("span", { className: "error" }, couponError));
-  } else if (cart.couponCode) {
+  } else if (cart.couponCodes.length > 0) {
     status.replaceChildren(
-      el("span", { className: "applied" }, `Coupon ${cart.couponCode} applied`),
-      el("button", { type: "button", className: "link", onclick: () => onChange(removeCoupon(cart)) }, "Remove"),
+      ...cart.couponCodes.map((code) => el("span", { className: "chip" }, code)),
+      el("button", { type: "button", className: "link", onclick: () => onChange(removeCoupon(cart)) }, "Remove all"),
     );
   } else {
     status.replaceChildren();

@@ -11,13 +11,14 @@ export interface CartItem {
 export interface Cart {
   id: string;
   items: CartItem[];
-  couponCode?: string;
+  /** Normalised coupon codes, in the order they were applied. */
+  couponCodes: string[];
 }
 
 let cartSeq = 0;
 
 export function createCart(id: string = `cart-${++cartSeq}`): Cart {
-  return { id, items: [] };
+  return { id, items: [], couponCodes: [] };
 }
 
 export class UnknownProductError extends Error {
