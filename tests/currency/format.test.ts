@@ -32,3 +32,17 @@ describe("formatDiscount", () => {
     expect(formatDiscount(0)).toBe("₹0.00");
   });
 });
+
+describe("formatINR edge cases", () => {
+  it("groups crores", () => {
+    expect(formatINR(10_000_000)).toBe("₹1,00,00,000.00");
+  });
+
+  it("hides floating-point noise", () => {
+    expect(formatINR(19.99 * 3)).toBe("₹59.97");
+  });
+
+  it("formats fractional discounts", () => {
+    expect(formatDiscount(24.98)).toBe("−₹24.98");
+  });
+});
