@@ -69,6 +69,6 @@ export function itemCount(cart: Cart): number {
 /** Quantities arrive as numbers from code and as strings from form fields and JSON payloads. */
 export function parseQuantity(input: number | string): number {
   const value = typeof input === "string" ? Number(input.trim()) : input;
-  if (!Number.isFinite(value)) throw new InvalidQuantityError(input);
+  if (!Number.isFinite(value) || value < 0) throw new InvalidQuantityError(input);
   return Math.trunc(value);
 }
