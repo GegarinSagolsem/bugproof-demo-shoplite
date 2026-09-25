@@ -29,3 +29,17 @@ describe("searchProducts", () => {
     expect(searchProducts(PRODUCTS, "Laptop")).toEqual([]);
   });
 });
+
+describe("searchProducts ordering", () => {
+  it("returns matches in catalog order", () => {
+    expect(ids(searchProducts(PRODUCTS, "Electronics"))).toEqual(["p11", "p12", "p13", "p14", "p15"]);
+  });
+
+  it("returns the same results for repeated queries", () => {
+    expect(searchProducts(PRODUCTS, "Cotton")).toEqual(searchProducts(PRODUCTS, "Cotton"));
+  });
+
+  it("matches multi-word names", () => {
+    expect(ids(searchProducts(PRODUCTS, "Water Bottle"))).toEqual(["p02"]);
+  });
+});
