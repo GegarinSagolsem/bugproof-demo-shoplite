@@ -61,3 +61,14 @@ describe("cart", () => {
     expect(itemCount(updated)).toBe(2);
   });
 });
+
+describe("quantities from form input", () => {
+  it("accepts a quantity typed into a form field", () => {
+    expect(addItem(createCart("form"), "p01", "2").items[0].quantity).toBe(2);
+  });
+
+  it("trims whitespace around a typed quantity", () => {
+    const cart = setQuantity(addItem(createCart("form"), "p01"), "p01", " 5 ");
+    expect(cart.items[0].quantity).toBe(5);
+  });
+});
