@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addItem, createCart } from "../../src/cart/cart";
+import { applyCoupon } from "../../src/cart/coupons";
 import { computeTotals } from "../../src/cart/totals";
 import { FakePaymentGateway } from "../../src/orders/payments";
 import { DuplicateOrderError, EmptyCartError, OrderService } from "../../src/orders/service";
@@ -73,5 +74,21 @@ describe("OrderService order history", () => {
     const order = await service.placeOrder(cartFor("o1"));
     expect(service.getOrder(order.id)).toEqual(order);
     expect(service.getOrder("ORD-9999")).toBeUndefined();
+  });
+});
+
+describe("OrderService payments", () => {
+  it("issues a distinct payment reference per order", async () => {
+    const { service } = setup();
+    const first = await service.placeOrder(cartFor("o1"));
+    const second = await service.placeOrder(cartFor("o2"));
+    expect(first.paymentId).not.toBe(second.paymentId);
+  });
+
+  it("charges the discounted total when a coupon is applied", async () => {
+    const { payments, service } = setup();
+    const order = await service.placeOrder(applyCoupon(addItem(createCart("promo"), "p13"), "SAVE10"));
+    expect(order.totals.discount).toBe(249.9);
+    expect(payments.charges[0].amount).toBe(order.totals.total);
   });
 });
