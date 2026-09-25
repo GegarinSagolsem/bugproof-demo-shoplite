@@ -35,3 +35,14 @@ describe("paginate", () => {
     expect(() => paginate(numbers, 1, 0)).toThrow(RangeError);
   });
 });
+
+describe("paginate metadata", () => {
+  it("reports neighbouring pages", () => {
+    expect(paginate(numbers, 2, 4)).toMatchObject({ hasPrev: true, hasNext: true });
+    expect(paginate(numbers, 1, 4)).toMatchObject({ hasPrev: false, hasNext: true });
+  });
+
+  it("reports the total item count", () => {
+    expect(paginate(PRODUCTS, 2, 6)).toMatchObject({ totalItems: 25, pageSize: 6 });
+  });
+});
