@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopLite</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><span class="logo">S</span> ShopLite</div>
+      <input id="search" type="search" placeholder="Search products…" autocomplete="off" aria-label="Search products" />
+    </header>
+    <main class="layout">
+      <section class="catalog" aria-label="Products">
+        <div id="product-grid" class="grid"></div>
+        <nav id="pager" class="pager" aria-label="Pagination"></nav>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
