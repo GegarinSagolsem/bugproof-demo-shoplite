@@ -6,26 +6,9 @@ export const DEFAULT_TRANSIT_DAYS = 3;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const SUNDAY = 0;
 
-interface CalendarTime {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-}
-
-/** Wall-clock date and hour of an instant in India Standard Time. */
-function istCalendar(instant: Date): CalendarTime {
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: DELIVERY_TIME_ZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(instant);
-  const get = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value);
-  return { year: get("year"), month: get("month"), day: get("day"), hour: get("hour") };
-}
+// India has no daylight saving, so IST is always UTC+05:30. Shifting the timestamp is much
+// cheaper than building an Intl.DateTimeFormat on every cart render.
+const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
 
 /** Couriers do not deliver on Sundays, so Sundays are not counted as transit days. */
 function addDeliveryDays(start: number, days: number): number {
@@ -46,9 +29,9 @@ function toIsoDate(epochMs: number): string {
  * Dispatch happens on the IST order date, or the next day after the 8 PM cutoff.
  */
 export function estimateDelivery(orderedAt: Date, transitDays: number = DEFAULT_TRANSIT_DAYS): string {
-  const { year, month, day, hour } = istCalendar(orderedAt);
-  let dispatch = Date.UTC(year, month - 1, day);
-  if (hour >= DISPATCH_CUTOFF_HOUR) dispatch += DAY_MS;
+  const ist = new Date(orderedAt.getTime() + IST_OFFSET_MS);
+  let dispatch = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate());
+  if (orderedAt.getUTCHours() >= DISPATCH_CUTOFF_HOUR) dispatch += DAY_MS;
   return toIsoDate(addDeliveryDays(dispatch, transitDays));
 }
 
