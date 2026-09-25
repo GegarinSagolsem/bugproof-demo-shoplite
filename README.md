@@ -1,3 +1,8 @@
-# ShopLite — BugProof demo target
+# ShopLite
 
-Small TypeScript shop used as the demo target for [BugProof](https://github.com/GegarinSagolsem/bugproof). Build instructions: `docs/SPEC.md`.
+A small in-memory TypeScript shop. Work in progress.
+
+```sh
+npm install
+npm test
+```
