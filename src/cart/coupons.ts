@@ -53,6 +53,7 @@ export function applyCoupon(cart: Cart, input: string): Cart {
   const code = normalizeCouponCode(input);
   if (!code) return cart;
   if (!isKnownCoupon(code)) throw new InvalidCouponError(input.trim());
+  if (cart.couponCodes.includes(code)) return cart;
   return { ...cart, couponCodes: [...cart.couponCodes, code] };
 }
 
