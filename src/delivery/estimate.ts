@@ -31,7 +31,7 @@ function toIsoDate(epochMs: number): string {
 export function estimateDelivery(orderedAt: Date, transitDays: number = DEFAULT_TRANSIT_DAYS): string {
   const ist = new Date(orderedAt.getTime() + IST_OFFSET_MS);
   let dispatch = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate());
-  if (orderedAt.getUTCHours() >= DISPATCH_CUTOFF_HOUR) dispatch += DAY_MS;
+  if (ist.getUTCHours() >= DISPATCH_CUTOFF_HOUR) dispatch += DAY_MS;
   return toIsoDate(addDeliveryDays(dispatch, transitDays));
 }
 
