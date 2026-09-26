@@ -1,5 +1,5 @@
 import { fromPaise, roundMoney, toPaise } from "../currency/money";
-import { GST_RATE } from "../tax/gst";
+import { calculateGst } from "../tax/gst";
 import type { Cart } from "./cart";
 import { couponDiscount } from "./coupons";
 import { lineItems, sumBy } from "./lineItems";
@@ -24,7 +24,7 @@ export function shippingFor(subtotal: number, lineCount: number): number {
 export function computeTotals(cart: Cart): CartTotals {
   const lines = lineItems(cart);
   const subtotal = roundMoney(sumBy(lines, (line) => line.lineTotal));
-  const tax = roundMoney(sumBy(lines, (line) => line.lineTotal * GST_RATE));
+  const tax = calculateGst(subtotal);
 
   // Coupons come off the pre-tax subtotal; GST is charged on the list price.
   // Cap combined discount at subtotal so total can never go negative.
