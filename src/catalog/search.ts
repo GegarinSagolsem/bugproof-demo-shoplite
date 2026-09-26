@@ -11,15 +11,15 @@ const indexCache = new WeakMap<readonly Product[], IndexEntry[]>();
 function indexFor(products: readonly Product[]): IndexEntry[] {
   let index = indexCache.get(products);
   if (index === undefined) {
-    index = products.map((product) => ({ product, haystack: `${product.name} ${product.category}` }));
+    index = products.map((product) => ({ product, haystack: `${product.name} ${product.category}`.toLowerCase() }));
     indexCache.set(products, index);
   }
   return index;
 }
 
-/** Substring search over product name and category. */
+/** Case-insensitive substring search over product name and category. */
 export function searchProducts(products: readonly Product[], query: string): Product[] {
-  const needle = query.trim();
+  const needle = query.trim().toLowerCase();
   if (needle === "") return [...products];
   return indexFor(products)
     .filter((entry) => entry.haystack.includes(needle))
