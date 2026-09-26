@@ -36,6 +36,7 @@ export interface OrderServiceOptions {
 
 export class OrderService {
   private readonly orders: Order[] = [];
+  private readonly pending = new Set<string>();
   private readonly payments: PaymentGateway;
   private readonly clock: () => Date;
   private seq = 0;
@@ -49,9 +50,16 @@ export class OrderService {
   async placeOrder(cart: Cart): Promise<Order> {
     if (cart.items.length === 0) throw new EmptyCartError();
     if (this.hasOrderFor(cart.id)) throw new DuplicateOrderError(cart.id);
+    if (this.pending.has(cart.id)) throw new DuplicateOrderError(cart.id);
+    this.pending.add(cart.id);
     const totals = computeTotals(cart);
     const placedAt = this.clock();
-    const { paymentId } = await this.payments.charge(totals.total, cart.id);
+    let paymentId: string;
+    try {
+      ({ paymentId } = await this.payments.charge(totals.total, cart.id));
+    } finally {
+      this.pending.delete(cart.id);
+    }
     const order: Order = {
       id: `ORD-${String(++this.seq).padStart(4, "0")}`,
       cartId: cart.id,
