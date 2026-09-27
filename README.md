@@ -1,5 +1,10 @@
 # ShopLite
 
+> **Demo target for [Cimex Fix](https://github.com/GegarinSagolsem/cimex-fix).** This shop has 8 planted bugs, each
+> introduced by an ordinary-looking commit, so IBM Bob can reproduce, bisect and fix them. The bug reports are in
+> [`intake/`](intake), every fix commit adds its repro test under `tests/bugproof/`, and each case's Proof of Fix is at
+> <https://cimex-fix.vercel.app/cases>.
+
 A small, in-memory TypeScript shop: product catalog with search and pagination, a cart with
 coupons, 18% GST and shipping, delivery-date estimates in India Standard Time, and order
 placement against a fake payment gateway. There is no backend or database — everything is plain

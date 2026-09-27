@@ -5,18 +5,18 @@ a QA report, a server log, a few GitHub issues and two screenshots.
 
 | File                                      | Kind            |
 | ----------------------------------------- | --------------- |
-| `bug-01-screenshot.png`                   | screenshot (capture manually, see below) |
+| `bug-01-screenshot.png`                   | screenshot of the real UI (steps below) |
 | `bug-02-issue.md`                         | GitHub issue    |
 | `bug-03-qa-report.md` / `.pdf`            | QA report       |
 | `bug-04-issue.md`                         | GitHub issue    |
 | `bug-05-issue.md`                         | GitHub issue    |
 | `bug-06-server.log`                       | server log      |
 | `bug-07-issue.md`                         | GitHub issue with log excerpt |
-| `bug-08-screenshot.png`                   | screenshot (capture manually, see below) |
+| `bug-08-screenshot.png`                   | screenshot of the real UI (steps below) |
 
-## Capturing the two screenshots
+## How the two screenshots were taken
 
-The screenshots are deliberately not generated. Capture them from the real UI:
+The screenshots are not generated: they were taken from the real, buggy UI. To take them again:
 
 1. From the repository root run `npm install`, then `cd ui && npm run dev` and open the printed
    URL (normally <http://localhost:5173>).
